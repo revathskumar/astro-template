@@ -1,0 +1,21 @@
+{
+  "extends": "astro/tsconfigs/strict",
+  "include": [".astro/types.d.ts", "**/*"],
+  "exclude": ["dist"],
+  "compilerOptions": {
+    "lib": ["ESNext", "DOM", "WebWorker"],
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"],
+      "@globals": ["src/components/global"],
+      "@component/*": ["src/components/*"],
+      "@style/*": ["src/styles/*"],
+      "@util/*": ["utils/*"],
+      "@img/*": ["src/assets/img/*"],
+      "@svg/*": ["src/assets/svg/*"],
+      "@icon/*": ["src/assets/svg/icon/*"],
+    },
+    "jsx": "react-jsx",
+    "jsxImportSource": "react",
+  },
+}
