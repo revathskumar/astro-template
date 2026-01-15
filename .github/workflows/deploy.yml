@@ -1,0 +1,96 @@
+name: Deploy
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: "environment"
+        required: true
+        default: "staging"
+        type: choice
+        options:
+          - staging
+          - production
+  pull_request:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    name: Build
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+      - name: Bun install
+        run: bun install
+      - name: Build
+        run: bun run build
+      - name: Upload dist folder
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist/
+          include-hidden-files: true
+  check:
+    runs-on: ubuntu-latest
+    name: Types Check
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+      - name: Bun install
+        run: bun install
+      - name: Build
+        run: bun run check
+  deploy_staging:
+    runs-on: ubuntu-latest
+    name: version upload (Staging)
+    needs: [build, check]
+    if: success() && (inputs.environment == 'staging' || github.event_name == 'push')
+    environment:
+      name: Staging
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+      - name: Download dist folder
+        uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist/
+      - name: Deploy Staging
+        uses: cloudflare/wrangler-action@v3
+        id: deployment
+        env:
+          WRANGLER_SEND_METRICS: false
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: versions upload --preview-alias ${{ github.event.inputs.environment || 'staging' }}
+          wranglerVersion: "4"
+  deploy:
+    runs-on: ubuntu-latest
+    name: Deploy Production
+    needs: [build, check]
+    if: success() && inputs.environment == 'production'
+    environment:
+      name: Production
+      url: https://${{steps.deployment.outputs.deployment-url}}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+      - name: Download dist folder
+        uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist/
+      - name: Deploy Prod
+        uses: cloudflare/wrangler-action@v3
+        id: deployment
+        env:
+          WRANGLER_SEND_METRICS: false
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: deploy
+          wranglerVersion: "4"
