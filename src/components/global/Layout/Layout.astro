@@ -14,6 +14,7 @@ import { seoConfig } from "@util/seoConfig"
 import { pwaInfo } from "virtual:pwa-info"
 
 import { ClientRouter } from "astro:transitions"
+import { Toaster } from "@/components/ui/sonner"
 
 // Props
 export interface Props {
@@ -183,6 +184,7 @@ const title = `${prefix}${pageTitle}` || `${prefix} Title`
         <!-- <Footer /> -->
 
         <ReloadPrompt client:load />
+        <Toaster client:idle />
       </SidebarLayout>
     </div>
   </body>
