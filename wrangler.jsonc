@@ -1,8 +1,11 @@
 {
   "main": "dist/_worker.js/index.js",
-  "name": "drops",
+  "name": "title",
   "compatibility_date": "2025-12-25",
   "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
+  "vars": {
+    "BUN_VERSION": "latest",
+  },
   "assets": {
     "binding": "ASSETS",
     "directory": "./dist",

@@ -8,7 +8,7 @@ import compress from "astro-compress"
 import AstroPWA from "@vite-pwa/astro"
 
 // Helper imports
-import { manifest, seoConfig } from "./utils/seoConfig.js"
+import { manifest } from "./utils/seoConfig"
 
 import tailwindcss from "@tailwindcss/vite"
 
@@ -20,6 +20,9 @@ const isDev = import.meta.env.DEV
 
 export default defineConfig({
   output: "server",
+  // experimental: {
+  //   csp: true,
+  // },
   //   site: seoConfig.baseURL,
   integrations: [
     sitemap(),
@@ -44,6 +47,9 @@ export default defineConfig({
   ],
 
   vite: {
+    ssr: {
+      external: [],
+    },
     server: {
       https: {
         key: await readFile("./certificates/localhost-key.pem"),

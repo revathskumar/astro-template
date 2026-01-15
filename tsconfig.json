@@ -3,7 +3,10 @@
   "include": [".astro/types.d.ts", "**/*"],
   "exclude": ["dist"],
   "compilerOptions": {
+    "types": ["@types/bun"],
     "lib": ["ESNext", "DOM", "WebWorker"],
+    "target": "ESNext",
+    "module": "Preserve",
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"],

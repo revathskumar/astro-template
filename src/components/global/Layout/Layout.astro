@@ -1,6 +1,8 @@
 ---
 // Component imports
 import { SEO } from "astro-seo"
+
+import SidebarLayout from "@/components/global/Layout/SidebarLayout"
 import ReloadPrompt from "@/components/ReloadPrompt"
 
 // Style imports
@@ -38,13 +40,13 @@ const {
   title: pageTitle,
   ogTitle,
   description,
-  image,
+  // image,
   disableIndexing = false,
 } = Astro.props as Props
 
 const prefix = import.meta.env.DEV ? "DEV " : ""
 
-const title = `${prefix}${pageTitle}` || `${prefix} Drops`
+const title = `${prefix}${pageTitle}` || `${prefix} Title`
 ---
 
 <html lang="en" class="dark">
@@ -167,15 +169,21 @@ const title = `${prefix}${pageTitle}` || `${prefix} Drops`
     {pwaInfo && <Fragment set:html={pwaInfo.webManifest.linkTag} />}
     <ClientRouter />
   </head>
-  <body class="min-h-screen flex flex-col w-full overflow-x-hidden">
-    <main class="flex flex-1 flex-col h-[100%] w-full">
-      <slot />
-    </main>
+  <body class="min-h-dvh w-full overflow-x-hidden">
+    <div class="bg-background container mx-auto px-4 flex flex-col">
+      <SidebarLayout client:idle>
+        <div class="flex flex-1 flex-col w-full">
+          <slot />
+        </div>
 
-    <script>
-      // This is a hack to get vite-plugin-pwa to generate a sw.js file.
-      // Do not remove this script tag.
-    </script>
-      <ReloadPrompt client:load />
+        <script>
+          // This is a hack to get vite-plugin-pwa to generate a sw.js file.
+          // Do not remove this script tag.
+        </script>
+        <!-- <Footer /> -->
+
+        <ReloadPrompt client:load />
+      </SidebarLayout>
+    </div>
   </body>
 </html>
