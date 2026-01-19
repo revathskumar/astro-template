@@ -41,7 +41,7 @@ jobs:
       - uses: oven-sh/setup-bun@v2
       - name: Bun install
         run: bun install
-      - name: Build
+      - name: Astro check
         run: bun run check
   deploy_staging:
     runs-on: ubuntu-latest
