@@ -18,6 +18,13 @@ import react from "@astrojs/react"
 
 const isDev = import.meta.env.DEV
 
+const dev_https = isDev
+  ? {
+      key: await readFile("./certificates/localhost-key.pem"),
+      cert: await readFile("./certificates/localhost.pem"),
+    }
+  : {}
+
 export default defineConfig({
   output: "server",
   // experimental: {
@@ -51,10 +58,7 @@ export default defineConfig({
       external: [],
     },
     server: {
-      https: {
-        key: await readFile("./certificates/localhost-key.pem"),
-        cert: await readFile("./certificates/localhost.pem"),
-      },
+      https: dev_https,
     },
     plugins: [tailwindcss()],
   },
